@@ -1,13 +1,11 @@
----
-platform: {enter the OS name running on device}
-device: {enter your device name here}
-language: {}
----
+platform: {Ubuntu 22.04}
+device: {ICS-6280}
+language: {English}
 
-Connect {enter your device name here} device to your Azure IoT services
+Connect ICS-6280 device to your Azure IoT services
 ===
 
----
+<!-- --- -->
 # Table of Contents
 
 -   [Introduction](#Introduction)
@@ -17,40 +15,29 @@ Connect {enter your device name here} device to your Azure IoT services
 -   [Integration with Azure IoT Explorer](#IntegrationwithAzureIoTExplorer)
 -   [Additional Links](#AdditionalLinks)
 
-# Changelist from last update - Nov2020 (remove this section)
--   IoT Central section is a **mandatory** section that provides the value of IoT Plug and Play experience. The goal is to streamline the out of box experience
--   Using Azure IoT Explorer is **optional** 
-
-# Instructions for using this template
-
--   Replace the text in {placeholders} with correct values.
--   Delete the lines {{enclosed}} after following the instructions enclosed between them.
--   It is advisable to use external links, wherever possible.
--   Remove this section from final document.
-
-# Tips for authoring great getting started guide (remove this section)
-Following below tips reduces operational overhead via email exchange and accelerate your overall certification process
-
-- When there are multiple options to provision devices using DPS, try to define the golden path in the main flow. Put other paths in #Additional information section below
-- Provide some paragraphs to the headers and avoid headers with just a link
-- Device application must be either pre-installed on the device or download-able via various means (partner hosted website/GitHub etc). Be specific about the steps on deploying or flashing the device application
-- Be specific about how to provision a device using DPS. DPS ID scope, registration ID and attestation methods (X.509, TPM or SAS key) configuration
-- Provide estimated time to complete the end-to-end operation. For better experience, we recommend to put estimated time for each section in "Prepare your device", "Integration with Azure IoT Explorer" and "Integration with Azure IoT Central" respectively
-
-
 <a name="Introduction"></a>
 
 # Introduction 
 
 **About this document**
 
-This document describes how to connect {enter your device name here} to Azure IoT Hub using the Azure IoT Explorer with certified device application and device models.
+This document describes how to connect ICS-6280 to Azure IoT Hub using the Azure IoT Explorer with certified device application and device models.
 
 IoT Plug and Play certified device simplifies the process of building devices without custom device code. Using Solution builders can integrated quickly using the certified IoT Plug and Play enabled device based on Azure IoT Central as well as third-party solutions.
 
 This getting started guide provides step by step instruction on getting the device provisioned to Azure IoT Hub using Device Provisioning Service (DPS) and using Azure IoT Explorer to interact with device's capabilities.
 
-{Please provide introduction and features of your device here}
+ICS-6280 Features:
+-   Intel® Elkhart lake SoC Processor, 2~4 cores
+-   260-pin DDR4 3200Mhz SO-DIMM with IBECC support x 1
+-   10/100/1000 Base-TX Ethernet x 4
+-   Supports up to 2 Pairs LAN Bypass (Optional)
+-   Support mini-card socket x 1, Micro SIM socket x 1
+-   DC 9V~48V power redundancy input with terminal block x 2
+-   2.5” SATA SSD x 1 support
+-   Support up to RS-232/422/485 COM ports x 2 (COM2 with isolation) with ESD Protection
+-   HDMI port x 1, USB 3.2 ports x 2, VGA port x 1
+-   Wide-Temp -40°C ~ 75°C Fanless Solution
 
 <a name="Prerequisites"></a>
 # Prerequisites
@@ -70,24 +57,47 @@ You should have the following items ready before beginning the process:
 <a name="preparethedevice"></a>
 # Prepare the Device.
 
-**Development Environmental setup**
+### Environmental setup
 
-IoT Plug and Play Certification is certifying specific device code implementation against specific device model. Device builders should either pre-install device code or make the binary download-able.{Please include the below pointers specific to device in this section and add screen shots where ever necessary}
+#### Hardware Environment
 
-1.	Describing the capabilities of the device 
-2.	How to setup the device and connect power
-3.	How to take the DPS configuration and program the device (Note : DPS ID scope should be configured w/o recompiling the embedded code)
-4.	How to configure device over Wifi, cellular, screens, etc.
-5.	Add the links of external software/tools as required 
-6.	Add steps on how to run the device code/how and where to download binary and then run on device. If you have multiple options on how to deploy device code please mention only one option here and other options in Additional links section
-7.	(Dev Kit requirement; Optional otherwise)
-	Please include the following information to assist developers with your device:
-	1)	Instructions for cloning the repo to download all sample device code, setup scripts and offline documentation
-	2)	Instructions to install necessary tools and instructions to compile. Provide links to the tools to download (such as GCC, CMake etc.). 
-	Provide version details if there are dependencies in compiling the code.
-A well-written GSG can be [found here](https://github.com/azure-rtos/getting-started) for reference. If your device code uses a ported version of the Azure IoT C SDK, please identify which ported version is required.
+-	Prepare the following devices :
+	1.	ICS-6280
+	2.	SATA HDD or SATA SSD
+	3.	monitor with I/O: HDMI or VGA
+	4.	keyboard and mouse
+	5.	RJ-45 cable
+-	Connect all the above devices to the ICS-6280.
+-	Power on ICS-6280.
+-	Connect to Network.
 
-8.  	How to configure a device to connect to Azure IoT Central (see detail below)
+#### Software Environment
+
+-	Install Ubuntu 22.04 LTS into ICS-6280.
+-	Download the source code from this [GitHub]() \
+	and check the “Azure-IoTHubgeneral-device-main” folder.
+-	Install [.NET SDK](https://dotnet.microsoft.com/en-us/download) and make sure the .NET environment is ready ( at least Version 6.0 ).
+-	Install [Git](https://git-scm.com/) \
+	or type "sudo apt install git" at Terminal.
+
+#### IOT Hub & DPS configuration
+Please refer to this tutorial to complete the following procedures :
+1.	Use Azure commands or Azure portal to create a Resource Group、an Iot Hub
+and a Device Provisioning Service
+2.	To link the DPS instance to your IoT hub
+3.	To create your device by individual device enrollment in your DPS instance.
+4.	Make a note of the DPS information (DPS endpoint/Registration ID/ID
+Scope/Symmetric key).
+5.	Set the DPS information got from the former step in “run.sh”.
+```Shell
+export IOTHUB_DEVICE_SECURITY_TYPE="DPS"
+export IOTHUB_DEVICE_DPS_ID_SCOPE=""
+export IOTHUB_DEVICE_DPS_DEVICE_ID=""
+export IOTHUB_DEVICE_DPS_DEVICE_KEY=""
+export IOTHUB_DEVICE_DPS_ENDPOINT="global.azure-devices-provisioning.net"
+#export KEYPAD_INTERRUPT="DISABLE" #If KEYPAD_INTERRUPT set DISABLE, the program will never stop
+export KEYPAD_INTERRUPT="ENABLE" #If KEYPAD_INTERRUPT set ENABLE, you can stop the program by pressing 'q' key
+```
 
 <a name="ConnecttoCentral"></a>
 # Connect to Azure IoT Central (Simple)
